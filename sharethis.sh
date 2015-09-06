@@ -22,8 +22,9 @@ SHARETHIS="$(cd $(dirname $0); pwd -P)"
 CACHE="$(dirname ~/.cache/sharethis/.)"
 NGINX="nginx -c /tmp/nginx.conf"
 
+
 # Check dependencies
-DEPENDENCIES="openssl nginx firejail sha512sum sed tail"
+DEPENDENCIES="openssl nginx firejail sed tail"
 for DEPENDENCY in $DEPENDENCIES; do
 	type $DEPENDENCY >/dev/null 2>&1 && continue
 	echo "Dependency not found:"
@@ -32,6 +33,7 @@ for DEPENDENCY in $DEPENDENCIES; do
 	echo "  "$DEPENDENCIES
 	exit 1
 done
+
 
 # Sandbox this script
 if [ -z "${SHARETHIS_SANDBOXED}" ]; then
@@ -49,6 +51,7 @@ if [ -z "${SHARETHIS_SANDBOXED}" ]; then
 	exit $EXITCODE
 fi
 
+
 # Generate certificate
 if [ ! -e "$CACHE/server.key" ]; then
 	mkdir -p "$CACHE"
@@ -60,16 +63,31 @@ if [ ! -e "$CACHE/server.key" ]; then
 	[ ! -e "$CACHE/server.key" ] && exit 2
 fi
 
-# Generate config
+
+# Generate and test config
 sed -e "s~SHAREME_PORT~$PORT~g" \
 	-e "s~SHAREME_CACHE~$CACHE~g" \
 	-e "s~SHAREME_WEBROOT~$WEBROOT~g" \
 	$SHARETHIS/nginx.conf \
 	> /tmp/nginx.conf
-
-# Verify nginx.conf, run nginx, display logs
 $NGINX -t -q || exit 3
-$NGINX
-echo "Hosting: $WEBROOT"
+
+
+# Display summary
+echo ""
+echo "Port:"
+echo $PORT
+echo ""
+echo "Certificate SHA256:"
+openssl x509 -in "$CACHE/server.cert" -noout -sha256 -fingerprint \
+	| cut -d '=' -f 2
+echo ""
+echo "Webroot:"
+echo "$WEBROOT"
+echo ""
 echo "Press ^C to stop"
+
+
+# Run nginx, follow the logs
+$NGINX
 tail -f /tmp/nginx.log
