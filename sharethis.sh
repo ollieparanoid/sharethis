@@ -16,13 +16,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+PORT=4443
 WEBROOT="$(pwd -P)"
 SHARETHIS="$(cd $(dirname $0); pwd -P)"
-NGINX="nginx -c $SHARETHIS/nginx.conf"
-CACHE=~/.cache/sharethis
+CACHE="$(dirname ~/.cache/sharethis/.)"
+NGINX="nginx -c /tmp/nginx.conf"
 
 # Check dependencies
-DEPENDENCIES="openssl nginx fcgiwrap firejail sha512sum"
+DEPENDENCIES="openssl nginx firejail sha512sum sed tail"
 for DEPENDENCY in $DEPENDENCIES; do
 	type $DEPENDENCY >/dev/null 2>&1 && continue
 	echo "Dependency not found:"
@@ -43,7 +44,17 @@ if [ ! -e "$CACHE/server.key" ]; then
 	[ ! -e "$CACHE/server.key" ] && exit 2
 fi
 
-# Verify nginx.conf
-$NGINX -t -q || exit 3
+# Generate config
+sed -e "s~SHAREME_PORT~$PORT~g" \
+	-e "s~SHAREME_CACHE~$CACHE~g" \
+	-e "s~SHAREME_WEBROOT~$WEBROOT~g" \
+	$SHARETHIS/nginx.conf \
+	> /tmp/nginx.conf
 
-echo "STUB"
+# Verify nginx.conf, run nginx, display logs
+$NGINX -t -q || exit 3
+$NGINX
+echo "Hosting: $WEBROOT"
+echo "Press ^C to stop."
+echo ""
+tail -f /tmp/nginx.log

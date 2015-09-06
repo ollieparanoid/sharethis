@@ -1,3 +1,4 @@
 - add working nginx.conf
 - sandbox the nginx server
 - link to firejail homepage in README.md
+- make port a commandline argument
