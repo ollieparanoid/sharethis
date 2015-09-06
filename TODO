@@ -1,4 +1,3 @@
-- link to firejail homepage in README.md
 - commandline arg: different port
 - commandline arg: disable autoindex
 - commandline arg: protect with password and generate (a new) one
