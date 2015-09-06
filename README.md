@@ -37,3 +37,10 @@ Press ^C to stop
 ^C
 Sandbox stopped
 ```
+
+### TODO
+Implement commandline arguments, that do the following:
+* host on custom port
+* disable autoindex
+* protect with password (another argument to generate a new one)
+* generate a new HTTPS certificate
