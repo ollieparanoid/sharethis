@@ -1,4 +1,4 @@
-- add working nginx.conf
-- sandbox the nginx server
 - link to firejail homepage in README.md
-- make port a commandline argument
+- commandline arg: different port
+- commandline arg: disable autoindex
+- commandline arg: protect with password and generate (a new) one
