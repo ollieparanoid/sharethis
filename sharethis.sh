@@ -33,6 +33,22 @@ for DEPENDENCY in $DEPENDENCIES; do
 	exit 1
 done
 
+# Sandbox this script
+if [ -z "${SHARETHIS_SANDBOXED}" ]; then
+	echo "Starting sandbox"
+	firejail \
+		--quiet \
+		--env=SHARETHIS_SANDBOXED=1 \
+		--profile=$SHARETHIS/firejail.profile \
+		--whitelist=$CACHE \
+		--whitelist=$WEBROOT \
+		$0
+	EXITCODE=$?
+	echo ""
+	echo "Sandbox stopped"
+	exit $EXITCODE
+fi
+
 # Generate certificate
 if [ ! -e "$CACHE/server.key" ]; then
 	mkdir -p "$CACHE"
@@ -55,6 +71,5 @@ sed -e "s~SHAREME_PORT~$PORT~g" \
 $NGINX -t -q || exit 3
 $NGINX
 echo "Hosting: $WEBROOT"
-echo "Press ^C to stop."
-echo ""
+echo "Press ^C to stop"
 tail -f /tmp/nginx.log
