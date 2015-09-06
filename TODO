@@ -1,4 +1,3 @@
 - add working nginx.conf
 - sandbox the nginx server
-- add license
 - link to firejail homepage in README.md
