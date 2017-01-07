@@ -9,11 +9,12 @@ This script only works, when the to-be-shared path does not contain characters, 
 ### Usage
 * Check out the source code to somewhere on your disk
 * Navigate to the folder, that you want to share over your local network
-* run full/path/to/sharethis.sh
+* run `full/path/to/sharethis.sh`
 * the first time, it will generate a HTTPS certificate
-* (you can force it to generate a new one by deleting ~/.cache/sharethis)
+* (you can force it to generate a new one by deleting `~/.cache/sharethis`)
 * when it is hosting, point your browser to https://127.0.0.1:4443 to download the files (replace the IP accordingly for LAN)
-* firejail ensures, that nginx only has access to the shared folder
+* firejail ensures, that nginx only has access to the shared folder, in case it gets exploited
+* `sharethis.sh` will show all access and error logs from nginx directly in the terminal
 
 ```
 ollieparanoid@laptop ~ % cd ~/share
