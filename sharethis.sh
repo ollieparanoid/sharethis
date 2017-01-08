@@ -44,6 +44,7 @@ if [ -z "${SHARETHIS_SANDBOXED}" ]; then
 		--profile=$SHARETHIS/firejail.profile \
 		--whitelist=$CACHE \
 		--whitelist=$WEBROOT \
+		--whitelist=$SHARETHIS \
 		$0
 	EXITCODE=$?
 	echo ""
