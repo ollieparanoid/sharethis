@@ -37,6 +37,7 @@ done
 
 # Sandbox this script
 if [ -z "${SHARETHIS_SANDBOXED}" ]; then
+	mkdir -p "$CACHE"
 	echo "Starting sandbox"
 	firejail \
 		--quiet \
@@ -55,7 +56,6 @@ fi
 
 # Generate certificate
 if [ ! -e "$CACHE/server.key" ]; then
-	mkdir -p "$CACHE"
 	cd "$CACHE"
 	openssl req -x509 -newkey rsa:4096 -keyout server.key \
 		-out server.cert -days 365 -sha512 -subj "/CN=localhost" \
